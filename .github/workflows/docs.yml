@@ -14,6 +14,7 @@ on:
 
 jobs:
   deploy_live_website:
+    if: github.repository == 'vuejs/vuefire'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
