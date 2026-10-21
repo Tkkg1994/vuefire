@@ -156,6 +156,36 @@ describe('Firestore and Database utils', () => {
     expect(refs).toEqual({})
   })
 
+  it('extracts refs nested in objects without a prototype', () => {
+    const nested = Object.create(null)
+    nested.ref = docRef
+    const [noRefsDoc, refs] = extractRefs(
+      { obj: nested },
+      undefined,
+      {},
+      globalFirestoreOptions
+    )
+    expect(noRefsDoc.obj.ref).toBe(docRef.path)
+    expect(refs).toEqual({
+      'obj.ref': expect.objectContaining({ id: docRef.id }),
+    })
+  })
+
+  it('keeps nested class instances as values', () => {
+    class Profile {
+      constructor(public team: unknown) {}
+    }
+    const profile = new Profile(docRef)
+    const [noRefsDoc, refs] = extractRefs(
+      { profile },
+      undefined,
+      {},
+      globalFirestoreOptions
+    )
+    expect(noRefsDoc.profile).toBe(profile)
+    expect(refs).toEqual({})
+  })
+
   it('extract object nested refs from document', () => {
     const [noRefsDoc, refs] = extractRefs(
       {
