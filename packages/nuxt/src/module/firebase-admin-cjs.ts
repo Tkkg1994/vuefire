@@ -25,7 +25,8 @@ export function firebaseAdminCjsPlugin(): Plugin {
       return {
         code: code.replace(
           DEFAULT_IMPORT_RE,
-          `import { createRequire } from 'node:module';\nconst mod = createRequire(import.meta.url)($1);`
+          // kept on one line so `map: null` stays accurate
+          `import { createRequire } from 'node:module'; const mod = createRequire(import.meta.url)($1);`
         ),
         map: null,
       }
